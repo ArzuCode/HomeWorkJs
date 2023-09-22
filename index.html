@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Management</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Person Management</h2>
+         <form id="personForm">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Person</button>
+        </form>
+        <hr>
+        <table class="table table-bordered" id="personTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be added dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Array to store persons
+        let persons = [];
+
+        // Function to add a person to the table
+        function addPersonToTable(person) {
+            const tableBody = document.querySelector('#personTable tbody');
+            const newRow = tableBody.insertRow();
+
+            const nameCell = newRow.insertCell(0);
+            nameCell.textContent = person.name;
+
+            const ageCell = newRow.insertCell(1);
+            ageCell.textContent = person.age;
+
+            const actionCell = newRow.insertCell(2);
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.className = 'btn btn-warning btn-sm';
+            editButton.onclick = () => editPerson(person);
+            actionCell.appendChild(editButton);
+        }
+
+        // Function to add a person
+        function addPerson(event) {
+            event.preventDefault();
+            const name = document.querySelector('#name').value;
+            const age = document.querySelector('#age').value;
+
+            if (name && age) {
+                const person = { name, age };
+                persons.push(person);
+                addPersonToTable(person);
+
+                // Clear form fields
+                document.querySelector('#name').value = '';
+                document.querySelector('#age').value = '';
+            }
+        }
+
+        // Function to edit a person
+        function editPerson(person) {
+            const newName = prompt('Edit Name:', person.name);
+            const newAge = prompt('Edit Age:', person.age);
+
+            if (newName !== null && newAge !== null) {
+                person.name = newName;
+                person.age = newAge;
+
+                // Update the table
+                const table = document.querySelector('#personTable');
+                const rows = table.rows;
+
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].cells[0].textContent === person.name && rows[i].cells[1].textContent === person.age.toString()) {
+                        rows[i].cells[0].textContent = person.name;
+                        rows[i].cells[1].textContent = person.age;
+                    }
+                }
+            }
+        }
+
+        // Submit form and add a person
+        const form = document.querySelector('#personForm');
+        form.addEventListener('submit', addPerson);
+    </script>
+</body>
+</html>
+
+
